@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Update Staff";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header">
+            <h4>Update Staff Details</h4>
+        </div>
+
+        <div class="card-body">
+            <form id="UpdateStaffForm">
+
+                <input type="hidden" id="UserId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="FullName"
+                           class="form-control"
+                           placeholder="Enter Full Name" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="Email"
+                           class="form-control"
+                           placeholder="Enter Email" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Update Staff
+                </button>
+
+                <a href="@Url.Action("GetStaff", "Staff")"
+                   class="btn btn-primary">
+                    Back
+                </a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function() {
+
+            var id = window.location.pathname.split('/').pop();
+
+            $("#UserId").val(id);
+
+            // Get Staff Details
+            loadStaff(id);
+
+        });
+
+        // GET STAFF BY ID
+
+        function loadStaff(id) {
+
+            $.ajax({
+
+                url: "/api/StaffApi/" + id,
+                type: "GET",
+
+                success: function(user) {
+
+                    $("#UserId").val(user.userId);
+                    $("#FullName").val(user.fullName);
+                    $("#Email").val(user.email);
+
+                },
+
+                error: function(xhr) {
+
+                    alert("Unable to load staff details");
+                    console.log(xhr.responseText);
+
+                }
+
+            });
+
+        }
+
+        // UPDATE STAFF
+
+        $("#UpdateStaffForm").submit(function(e) {
+
+            e.preventDefault();
+
+            var id = $("#UserId").val();
+
+            var user = {
+
+                FullName: $("#FullName").val(),
+                Email: $("#Email").val()
+
+            };
+
+            $.ajax({
+
+                url: "/api/StaffApi/" + id,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(user),
+
+                success: function() {
+
+                    alert("Staff Updated Successfully!");
+
+                    window.location.href = "@Url.Action("GetStaff", "Staff")";
+
+                },
+
+                error: function(xhr) {
+
+                    alert("Unable to update staff!");
+                    console.log(xhr.responseText);
+
+                }
+
+            });
+
+        });
+
+    </script>
+}

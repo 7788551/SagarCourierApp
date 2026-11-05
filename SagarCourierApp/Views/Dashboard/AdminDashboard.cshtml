@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "AdminDashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div>
+
+    <h2>Admin Dashboard</h2>
+
+
+
+    <a href="@Url.Action("Register","Account")">
+         Add Staff
+    </a>
+    <a href="@Url.Action("GetStaff","Staff")">
+         View Staff
+    </a>
+    <a href="@Url.Action("UpdateStaff","Staff")">
+         Edit Staff
+    </a>
+    </div>

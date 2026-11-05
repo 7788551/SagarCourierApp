@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="mb-0">Staff Registration</h4>
+            </div>
+
+            <div class="card-body p-4">
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label for="FullName" class="form-label">
+                            Full Name
+                        </label>
+                        <input type="text" id="FullName"
+                               class="form-control"
+                               placeholder="Enter your full name"
+                               maxlength="100"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email</label>
+                        <input type="email" id="Email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               maxlength="150"
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Password" class="form-label">
+                            Password
+                        </label>
+                        <input type="password" id="Password"
+                               class="form-control"
+                               placeholder="Minimum 8 characters"
+                               minlength="8"
+                               required />
+                    </div>
+
+                    <button type="submit" id="registerBtn"
+                            class="btn btn-success w-100">
+                        Register
+                    </button>
+                </form>
+
+                <div id="message" class="mt-3" role="alert"></div>
+
+                <hr />
+
+                <p class="text-center mb-0">
+                    BACK
+                    <a asp-controller="Staff"
+                       asp-action="GetStaff">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#registerForm").submit(function(e) {
+            e.preventDefault();
+
+            $("#message").empty();
+
+            $.ajax({
+                url: "/api/AccountApi/register",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    FullName: $("#FullName").val(),
+                    Email: $("#Email").val(),
+                    Password: $("#Password").val()
+                }),
+
+                success: function(response) {
+                    $("#message").empty().append(
+                        $("<div>")
+                            .addClass("alert alert-success")
+                            .text(response.message)
+                    );
+
+                    $("#registerForm")[0].reset();
+                },
+
+                error: function(xhr) {
+                    let message = xhr.responseJSON?.message
+                        || "Registration failed. Please try again.";
+
+                    $("#message").empty().append(
+                        $("<div>")
+                            .addClass("alert alert-danger")
+                            .text(message)
+                    );
+                }
+            });
+        });
+    </script>
+}
