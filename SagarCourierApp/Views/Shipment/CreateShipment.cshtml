@@ -1,0 +1,203 @@
+﻿@{
+    ViewData["Title"] = "Create Shipment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+            <h4>Create New Shipment</h4>
+        </div>
+
+        <div class="card-body">
+
+            <div id="message"></div>
+
+            <form id="CreateShipmentForm">
+
+                <div class="mb-3">
+                    <label class="form-label">Sender Name</label>
+                    <input type="text"
+                           id="SenderName"
+                           class="form-control"
+                           placeholder="Enter sender name"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Receiver Name</label>
+                    <input type="text"
+                           id="ReceiverName"
+                           class="form-control"
+                           placeholder="Enter receiver name"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Receiver Phone</label>
+                    <input type="text"
+                           id="ReceiverPhone"
+                           class="form-control"
+                           placeholder="Enter receiver phone"
+                           required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pickup Address</label>
+                    <textarea id="PickupAddress"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Enter pickup address"
+                              required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Delivery Address</label>
+                    <textarea id="DeliveryAddress"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Enter delivery address"
+                              required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Weight (KG)</label>
+                    <input type="number"
+                           id="Weight"
+                           class="form-control"
+                           placeholder="Enter shipment weight"
+                           min="0.01"
+                           step="0.01"
+                           required />
+                </div>
+
+                <button type="submit"
+                        id="CreateShipmentButton"
+                        class="btn btn-success">
+                    Create Shipment
+                </button>
+
+                <a href="@Url.Action("GetShipments", "Shipment")"
+                   class="btn btn-secondary">
+                    Back
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const apiUrl = '@Url.Content("~/api/ShipmentApi")';
+
+        const shipmentListUrl =
+            '@Url.Action("GetShipments", "Shipment")';
+
+        // Prevent multiple submissions
+        let isSubmitting = false;
+
+        // Create shipment
+        $("#CreateShipmentForm").submit(function(e) {
+
+            e.preventDefault();
+
+            // Prevent duplicate clicks
+            if (isSubmitting) {
+                return;
+            }
+
+            isSubmitting = true;
+
+            // Disable button while request is processing
+            $("#CreateShipmentButton")
+                .prop("disabled", true)
+                .text("Creating Shipment...");
+
+            $("#message").empty();
+
+            // Collect form data
+            var shipment = {
+                senderName: $("#SenderName").val().trim(),
+                receiverName: $("#ReceiverName").val().trim(),
+                receiverPhone: $("#ReceiverPhone").val().trim(),
+                pickupAddress: $("#PickupAddress").val().trim(),
+                deliveryAddress: $("#DeliveryAddress").val().trim(),
+                weight: parseFloat($("#Weight").val())
+            };
+
+            // Call CreateShipment API
+            $.ajax({
+
+                url: apiUrl,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(shipment),
+
+                success: function(response) {
+
+                    // Show success popup
+                    alert(
+                        "Shipment has been created successfully!\n\n" +
+                        "Tracking Number: " + response.trackingNumber
+                    );
+
+                    // Redirect to shipment list
+                    window.location.href = shipmentListUrl;
+                },
+
+                error: function(xhr) {
+
+                    let errorMessage = xhr.responseJSON?.message
+                        || "Unable to confirm shipment creation.";
+
+                    // Timeout or server error:
+                    // The database might already contain the shipment.
+                    if (xhr.status >= 500 || xhr.status === 0) {
+
+                        $("#message").html(`
+                                    <div class="alert alert-warning">
+                                        ${errorMessage}
+                                        <br />
+                                        Your request may already have been processed.
+                                        Please check the shipment list before trying again.
+
+                                        <br />
+
+                                        <a href="${shipmentListUrl}"
+                                           class="btn btn-primary mt-2">
+                                            View Shipments
+                                        </a>
+                                    </div>
+                                `);
+
+                        // Keep button disabled to prevent accidental retry
+                        return;
+                    }
+
+                    // Display validation or other client error
+                    $("#message").html(`
+                                <div class="alert alert-danger">
+                                    ${errorMessage}
+                                </div>
+                            `);
+
+                    // Allow retry after a definite client-side failure
+                    isSubmitting = false;
+
+                    $("#CreateShipmentButton")
+                        .prop("disabled", false)
+                        .text("Create Shipment");
+                }
+
+            });
+
+        });
+
+    </script>
+}

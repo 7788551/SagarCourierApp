@@ -1,15 +1,14 @@
-using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add MVC services
 builder.Services.AddControllersWithViews();
 
+// Configure Session
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSession(options => 
+builder.Services.AddSession(options =>
 {
-
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
@@ -18,23 +17,28 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Enable Session
 app.UseSession();
 
 app.UseAuthorization();
 
+// Map attribute-routed API controllers
+app.MapControllers();
 
+// Map MVC controllers and views
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");

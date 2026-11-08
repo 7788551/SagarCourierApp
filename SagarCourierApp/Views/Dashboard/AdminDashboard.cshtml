@@ -1,22 +1,220 @@
 ﻿@{
-    ViewData["Title"] = "AdminDashboard";
+    ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="container-fluid mt-4 mb-5">
 
-<div>
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Admin Dashboard</h2>
+            <p class="text-muted mb-0">
+                Welcome to Sagar Courier Management System.
+                Manage shipments and staff from one place.
+            </p>
+        </div>
 
-    <h2>Admin Dashboard</h2>
-
-
-
-    <a href="@Url.Action("Register","Account")">
-         Add Staff
-    </a>
-    <a href="@Url.Action("GetStaff","Staff")">
-         View Staff
-    </a>
-    <a href="@Url.Action("UpdateStaff","Staff")">
-         Edit Staff
-    </a>
+        <span class="badge bg-primary p-2">
+            Administrator
+        </span>
     </div>
+
+    <!-- Overview Cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+                            <i class="bi bi-box-seam fs-3 text-primary"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="text-muted mb-1">Shipment Management</h6>
+                            <h5 class="fw-bold mb-0">Shipments</h5>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-3 mb-3">
+                        Monitor and manage all courier shipments.
+                    </p>
+
+                    <a href="@Url.Action("GetShipments", "Shipment")"
+                       class="btn btn-primary w-100">
+                        View All Shipments
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded p-3 me-3">
+                            <i class="bi bi-plus-circle fs-3 text-success"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="text-muted mb-1">Shipment Operations</h6>
+                            <h5 class="fw-bold mb-0">Create Shipment</h5>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-3 mb-3">
+                        Register a new shipment in the system.
+                    </p>
+
+                    <a href="@Url.Action("CreateShipment", "Shipment")"
+                       class="btn btn-success w-100">
+                        Create Shipment
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 rounded p-3 me-3">
+                            <i class="bi bi-people fs-3 text-warning"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="text-muted mb-1">Staff Management</h6>
+                            <h5 class="fw-bold mb-0">Staff Members</h5>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-3 mb-3">
+                        View and manage registered staff members.
+                    </p>
+
+                    <a href="@Url.Action("GetStaff", "Staff")"
+                       class="btn btn-warning w-100">
+                        View Staff
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-info bg-opacity-10 rounded p-3 me-3">
+                            <i class="bi bi-person-plus fs-3 text-info"></i>
+                        </div>
+
+                        <div>
+                            <h6 class="text-muted mb-1">Staff Administration</h6>
+                            <h5 class="fw-bold mb-0">Add Staff</h5>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mt-3 mb-3">
+                        Create new staff accounts for your organization.
+                    </p>
+
+                    <a href="@Url.Action("Register", "Account")"
+                       class="btn btn-info text-white w-100">
+                        Register Staff
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Shipment Management Section -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">
+                <i class="bi bi-truck me-2 text-primary"></i>
+                Shipment Management
+            </h5>
+        </div>
+
+        <div class="card-body">
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+                    <h6 class="fw-bold">Manage Courier Shipments</h6>
+
+                    <p class="text-muted mb-md-0">
+                        Access all shipments created by Admin and Staff.
+                        Review shipment information, update delivery status,
+                        and manage shipment records.
+                    </p>
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <a href="@Url.Action("GetShipments", "Shipment")"
+                       class="btn btn-outline-primary me-2 mb-2">
+                        View Shipments
+                    </a>
+
+                    <a href="@Url.Action("CreateShipment", "Shipment")"
+                       class="btn btn-primary mb-2">
+                        Add Shipment
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff Management Section -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+            <h5 class="fw-bold mb-0">
+                <i class="bi bi-person-gear me-2 text-success"></i>
+                Staff Management
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+                    <h6 class="fw-bold">Manage Staff Accounts</h6>
+
+                    <p class="text-muted mb-md-0">
+                        Register new staff members, view existing staff
+                        accounts and update staff information.
+                    </p>
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <a href="@Url.Action("Register", "Account")"
+                       class="btn btn-success me-2 mb-2">
+                        Add Staff
+                    </a>
+
+                    <a href="@Url.Action("GetStaff", "Staff")"
+                       class="btn btn-outline-success me-2 mb-2">
+                        View Staff
+                    </a>
+
+                    <a href="@Url.Action("UpdateStaff", "Staff")"
+                       class="btn btn-outline-secondary mb-2">
+                        Edit Staff
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

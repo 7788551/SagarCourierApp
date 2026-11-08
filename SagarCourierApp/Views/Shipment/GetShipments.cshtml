@@ -1,0 +1,207 @@
+﻿@{
+    ViewData["Title"] = "Manage Shipments";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string roleId = Context.Session.GetString("RoleId");
+
+    string dashboardAction = roleId == "1"
+        ? "AdminDashboard"
+        : "StaffDashboard";
+}
+
+<div class="container-fluid mt-4">
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">Manage Shipments</h2>
+            <p class="text-muted mb-0">
+                View and manage courier shipments.
+            </p>
+        </div>
+
+        <div>
+            <!-- Back to Dashboard -->
+            <a href="@Url.Action(dashboardAction, "Dashboard")"
+               class="btn btn-secondary me-2">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+
+            <!-- Create Shipment -->
+            <a href="@Url.Action("CreateShipment", "Shipment")"
+               class="btn btn-success">
+                <i class="bi bi-plus-circle"></i>
+                Create Shipment
+            </a>
+        </div>
+
+    </div>
+
+    <div id="message"></div>
+
+    <!-- Shipment Table -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-striped table-hover align-middle">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Tracking Number</th>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Receiver Phone</th>
+                            <th>Pickup Address</th>
+                            <th>Delivery Address</th>
+                            <th>Weight (KG)</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ShipmentTableBody">
+                        <tr>
+                            <td colspan="10" class="text-center">
+                                Loading shipments...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        const apiUrl = '@Url.Content("~/api/ShipmentApi")';
+
+        const updateUrl = '@Url.Action("UpdateShipment", "Shipment")';
+
+        $(document).ready(function() {
+            GetShipments();
+        });
+
+        // Get all shipments
+        function GetShipments() {
+
+            $.ajax({
+                url: apiUrl,
+                type: "GET",
+
+                success: function(response) {
+
+                    $("#ShipmentTableBody").empty();
+
+                    if (response.length === 0) {
+
+                        $("#ShipmentTableBody").html(`
+                                    <tr>
+                                        <td colspan="10" class="text-center">
+                                            No shipments found.
+                                        </td>
+                                    </tr>
+                                `);
+
+                        return;
+                    }
+
+                    $.each(response, function(index, item) {
+
+                        var row = `
+                                    <tr>
+                                        <td>${item.trackingNumber}</td>
+                                        <td>${item.senderName}</td>
+                                        <td>${item.receiverName}</td>
+                                        <td>${item.receiverPhone}</td>
+                                        <td>${item.pickupAddress}</td>
+                                        <td>${item.deliveryAddress}</td>
+                                        <td>${item.weight}</td>
+                                        <td>${item.status}</td>
+                                        <td>${new Date(item.createdAt).toLocaleString()}</td>
+
+                                        <td>
+                                            <a href="${updateUrl}/${item.shipmentId}"
+                                               class="btn btn-primary btn-sm mb-1">
+                                                Edit
+                                            </a>
+
+                                            <button type="button"
+                                                    class="btn btn-danger btn-sm mb-1"
+                                                    onclick="DeleteShipment(${item.shipmentId})">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+
+                        $("#ShipmentTableBody").append(row);
+                    });
+                },
+
+                error: function(xhr) {
+
+                    let errorMessage = xhr.responseJSON?.message
+                        || "Unable to load shipments.";
+
+                    $("#ShipmentTableBody").html(`
+                                <tr>
+                                    <td colspan="10" class="text-center text-danger">
+                                        ${errorMessage}
+                                    </td>
+                                </tr>
+                            `);
+                }
+            });
+        }
+
+        // Delete shipment
+        function DeleteShipment(id) {
+
+            if (!confirm("Are you sure you want to delete this shipment?")) {
+                return;
+            }
+
+            $.ajax({
+                url: apiUrl + "/" + id,
+                type: "DELETE",
+
+                success: function(response) {
+
+                    $("#message").html(`
+                                <div class="alert alert-success">
+                                    ${response.message}
+                                </div>
+                            `);
+
+                    GetShipments();
+                },
+
+                error: function(xhr) {
+
+                    let errorMessage = xhr.responseJSON?.message
+                        || "Unable to delete shipment.";
+
+                    $("#message").html(`
+                                <div class="alert alert-danger">
+                                    ${errorMessage}
+                                </div>
+                            `);
+                }
+            });
+        }
+
+    </script>
+}

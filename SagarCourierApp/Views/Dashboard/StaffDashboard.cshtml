@@ -1,1 +1,61 @@
-﻿<h2>Staff Dashboard</h2>
+﻿@{
+    ViewData["Title"] = "Staff Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Staff Dashboard</h2>
+
+    <div class="row">
+
+        <!-- View Shipments -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        <i class="bi bi-box-seam"></i>
+                        Manage Shipments
+                    </h5>
+
+                    <p class="card-text">
+                        View, update and delete your shipments.
+                        Track shipment details and delivery status.
+                    </p>
+
+                    <a href="@Url.Action("GetShipments", "Shipment")"
+                       class="btn btn-primary">
+                        View My Shipments
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Shipment -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        <i class="bi bi-plus-circle"></i>
+                        Create Shipment
+                    </h5>
+
+                    <p class="card-text">
+                        Register a new courier shipment by entering
+                        sender, receiver and delivery information.
+                    </p>
+
+                    <a href="@Url.Action("CreateShipment", "Shipment")"
+                       class="btn btn-success">
+                        Create New Shipment
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
